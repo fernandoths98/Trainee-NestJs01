@@ -1,0 +1,1 @@
+export const DRINK_BRANDS = 'DRINK_BRANDS';

@@ -1,0 +1,43 @@
+import { PaginationQueryDto } from './../common/dto/pagination-query.dto';
+import { UpdateCoNestDto } from './dto/update-co-nest.dto';
+import { CreateCoNestDto } from './dto/create-co-nest.dto';
+import { ServiceNest } from './co-nest.service';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, Res } from '@nestjs/common';
+
+
+@Controller('co-nest')
+export class CoNestController {
+    constructor(private readonly nestService: ServiceNest) {}
+
+    @Get() // untuk mengambil data keseluruhan
+    findAll(@Query() paginationQuery: PaginationQueryDto) {
+        return this.nestService.findAll(paginationQuery);
+        // const {limit, offset } = paginationQuery;
+        // return `This action returns all coffee. Limit: ${limit}, Offset: ${offset}`;
+    }
+
+    @Get(':id') // untuk mengambil data berdasarkan id yang diinginkan
+    findOne(@Param('id') id: number) {
+        //console.log(typeof id)
+        return this.nestService.findOne('' + id);
+        //return `This action returns #${id} coffee`;
+    }
+
+    @Post() // untuk menginput data
+    create(@Body() createdNestDto: CreateCoNestDto) {
+        console.log(createdNestDto instanceof CreateCoNestDto)
+        return this.nestService.create(createdNestDto);
+    }
+
+    @Patch(':id') // untuk merubah data berdasarkan id yang diinginkan
+    update(@Param('id') id: string, @Body() updateNestDto: UpdateCoNestDto) {
+        return this.nestService.update(id, updateNestDto);
+        //return `This action update #${id} coffee`;
+    }
+
+    @Delete(':id') //untuk menghapus data berdasarkan id yang diinginkan
+    remove(@Param('id') id: string) {
+        return this.nestService.remove(id);
+        //return `This action removes #${id} coffeee`;
+    }
+}
