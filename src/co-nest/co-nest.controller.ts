@@ -1,23 +1,34 @@
+import { ParseIntPipe } from './../common/pipes/parse-int.pipe';
 import { PaginationQueryDto } from './../common/dto/pagination-query.dto';
 import { UpdateCoNestDto } from './dto/update-co-nest.dto';
 import { CreateCoNestDto } from './dto/create-co-nest.dto';
 import { ServiceNest } from './co-nest.service';
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, Res, SetMetadata } from '@nestjs/common';
+import { Public } from '../common/decorators/public.decorator';
+import { resolve } from 'path';
+import { Protocol } from '../common/decorators/protocol.decorator';
+import { ApiForbiddenResponse, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('co-nest')
 @Controller('co-nest')
 export class CoNestController {
     constructor(private readonly nestService: ServiceNest) {}
 
+    
+    @Public()
     @Get() // untuk mengambil data keseluruhan
-    findAll(@Query() paginationQuery: PaginationQueryDto) {
+    async findAll(@Protocol('https') protocol: string, 
+    @Query() paginationQuery: PaginationQueryDto) {
+        console.log(protocol);
+        //await new Promise(resolve => setTimeout(resolve, 5000));
         return this.nestService.findAll(paginationQuery);
         // const {limit, offset } = paginationQuery;
         // return `This action returns all coffee. Limit: ${limit}, Offset: ${offset}`;
     }
 
     @Get(':id') // untuk mengambil data berdasarkan id yang diinginkan
-    findOne(@Param('id') id: number) {
+    findOne(@Param('id', ParseIntPipe) id: number) {
+        console.log(id);
         //console.log(typeof id)
         return this.nestService.findOne('' + id);
         //return `This action returns #${id} coffee`;
